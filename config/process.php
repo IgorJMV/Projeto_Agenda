@@ -5,6 +5,36 @@
     include_once("connection.php");
     include_once("url.php");
 
+    $data = $_POST;
+
+    //Modificações no banco
+    if(!empty($data)){
+        //Criar contato
+        if($data["type"] === "create"){
+            $name = $data["name"];
+            $phone = $data["phone"];
+            $observations = $data["observations"];
+
+            $query = "INSERT INTO contacts (name, phone, observations) VALUES (:name, :phone, :observations)";
+
+            $statement = $conn->prepare($query);
+            $statement->bindParam(":name", $name);
+            $statement->bindParam(":phone", $phone);
+            $statement->bindParam(":observations", $observations);
+            try {
+                $statement->execute();
+                $_SESSION["msg"] = "Contato criado com sucesso!";                
+            } catch (PDOException $e) {
+                echo "Insert error: " . $e->getMessage();
+            }
+        }
+
+        //Redirecionando para home
+        header("Location:" . $BASE_URL . "../index.php");
+    } else {
+
+    }
+
     $id;
 
     if(!empty($_GET)){
@@ -28,6 +58,9 @@
         $contacts = $statement->fetchAll();
     }
 
+
+    //Fechar conexão
+    $conn = null;
 
 
 ?>
