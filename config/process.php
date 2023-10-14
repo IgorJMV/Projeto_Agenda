@@ -27,6 +27,25 @@
             } catch (PDOException $e) {
                 echo "Insert error: " . $e->getMessage();
             }
+        } else if($data["type"] === "edit"){
+            $id = $data["id"];
+            $name = $data["name"];
+            $phone = $data["phone"];
+            $observations = $data["observations"];
+
+            $query = "UPDATE contacts SET name = :name, phone = :phone, observations = :observations WHERE id = :id";
+
+            $statement = $conn->prepare($query);
+            $statement->bindParam(":name", $name);
+            $statement->bindParam(":phone", $phone);
+            $statement->bindParam(":observations", $observations);
+            $statement->bindParam(":id", $id);
+            try {
+                $statement->execute();
+                $_SESSION["msg"] = "Contato atualizado com sucesso!";                
+            } catch (PDOException $e) {
+                echo "Insert error: " . $e->getMessage();
+            }
         }
 
         //Redirecionando para home
